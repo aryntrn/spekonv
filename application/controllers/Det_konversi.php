@@ -1,0 +1,150 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Det_konversi extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('Det_konversi_model');
+        $this->load->library('form_validation');        
+	$this->load->library('datatables');
+    }
+
+    public function index()
+    {
+        $this->load->view('det_konversi/det_konversi_list');
+    } 
+    
+    public function json() {
+        header('Content-Type: application/json');
+        echo $this->Det_konversi_model->json();
+    }
+
+    public function read($id) 
+    {
+        $row = $this->Det_konversi_model->get_by_id($id);
+        if ($row) {
+            $data = array(
+		'id_det_konv' => $row->id_det_konv,
+		'id_konversi' => $row->id_konversi,
+		'id_sintesis' => $row->id_sintesis,
+		'bobot_ahp' => $row->bobot_ahp,
+		'status_dipilih' => $row->status_dipilih,
+	    );
+            $this->load->view('det_konversi/det_konversi_read', $data);
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('det_konversi'));
+        }
+    }
+
+    public function create() 
+    {
+        $data = array(
+            'button' => 'Create',
+            'action' => site_url('det_konversi/create_action'),
+	    'id_det_konv' => set_value('id_det_konv'),
+	    'id_konversi' => set_value('id_konversi'),
+	    'id_sintesis' => set_value('id_sintesis'),
+	    'bobot_ahp' => set_value('bobot_ahp'),
+	    'status_dipilih' => set_value('status_dipilih'),
+	);
+        $this->load->view('det_konversi/det_konversi_form', $data);
+    }
+    
+    public function create_action() 
+    {
+        $this->_rules();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->create();
+        } else {
+            $data = array(
+		'id_konversi' => $this->input->post('id_konversi',TRUE),
+		'id_sintesis' => $this->input->post('id_sintesis',TRUE),
+		'bobot_ahp' => $this->input->post('bobot_ahp',TRUE),
+		'status_dipilih' => $this->input->post('status_dipilih',TRUE),
+	    );
+
+            $this->Det_konversi_model->insert($data);
+            $this->session->set_flashdata('message', 'Create Record Success');
+            redirect(site_url('det_konversi'));
+        }
+    }
+    
+    public function update($id) 
+    {
+        $row = $this->Det_konversi_model->get_by_id($id);
+
+        if ($row) {
+            $data = array(
+                'button' => 'Update',
+                'action' => site_url('det_konversi/update_action'),
+		'id_det_konv' => set_value('id_det_konv', $row->id_det_konv),
+		'id_konversi' => set_value('id_konversi', $row->id_konversi),
+		'id_sintesis' => set_value('id_sintesis', $row->id_sintesis),
+		'bobot_ahp' => set_value('bobot_ahp', $row->bobot_ahp),
+		'status_dipilih' => set_value('status_dipilih', $row->status_dipilih),
+	    );
+            $this->load->view('det_konversi/det_konversi_form', $data);
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('det_konversi'));
+        }
+    }
+    
+    public function update_action() 
+    {
+        $this->_rules();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->update($this->input->post('id_det_konv', TRUE));
+        } else {
+            $data = array(
+		'id_konversi' => $this->input->post('id_konversi',TRUE),
+		'id_sintesis' => $this->input->post('id_sintesis',TRUE),
+		'bobot_ahp' => $this->input->post('bobot_ahp',TRUE),
+		'status_dipilih' => $this->input->post('status_dipilih',TRUE),
+	    );
+
+            $this->Det_konversi_model->update($this->input->post('id_det_konv', TRUE), $data);
+            $this->session->set_flashdata('message', 'Update Record Success');
+            redirect(site_url('det_konversi'));
+        }
+    }
+    
+    public function delete($id) 
+    {
+        $row = $this->Det_konversi_model->get_by_id($id);
+
+        if ($row) {
+            $this->Det_konversi_model->delete($id);
+            $this->session->set_flashdata('message', 'Delete Record Success');
+            redirect(site_url('det_konversi'));
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('det_konversi'));
+        }
+    }
+
+    public function _rules() 
+    {
+	$this->form_validation->set_rules('id_konversi', 'id konversi', 'trim|required');
+	$this->form_validation->set_rules('id_sintesis', 'id sintesis', 'trim|required');
+	$this->form_validation->set_rules('bobot_ahp', 'bobot ahp', 'trim|required|numeric');
+	$this->form_validation->set_rules('status_dipilih', 'status dipilih', 'trim|required');
+
+	$this->form_validation->set_rules('id_det_konv', 'id_det_konv', 'trim');
+	$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+    }
+
+}
+
+/* End of file Det_konversi.php */
+/* Location: ./application/controllers/Det_konversi.php */
+/* Please DO NOT modify this information : */
+/* Generated by Harviacode Codeigniter CRUD Generator 2019-01-21 13:36:27 */
+/* http://harviacode.com */

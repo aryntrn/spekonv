@@ -1,0 +1,150 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Mk_kampus_asal extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('Mk_kampus_asal_model');
+        $this->load->library('form_validation');        
+	$this->load->library('datatables');
+    }
+
+    public function index()
+    {
+        $this->load->view('mk_kampus_asal/mk_kampus_asal_list');
+    } 
+    
+    public function json() {
+        header('Content-Type: application/json');
+        echo $this->Mk_kampus_asal_model->json();
+    }
+
+    public function read($id) 
+    {
+        $row = $this->Mk_kampus_asal_model->get_by_id($id);
+        if ($row) {
+            $data = array(
+		'id_mk_asal' => $row->id_mk_asal,
+		'id_jurusan' => $row->id_jurusan,
+		'nama_indo' => $row->nama_indo,
+		'nama_inggris' => $row->nama_inggris,
+		'jml_sks' => $row->jml_sks,
+	    );
+            $this->load->view('mk_kampus_asal/mk_kampus_asal_read', $data);
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('mk_kampus_asal'));
+        }
+    }
+
+    public function create() 
+    {
+        $data = array(
+            'button' => 'Create',
+            'action' => site_url('mk_kampus_asal/create_action'),
+	    'id_mk_asal' => set_value('id_mk_asal'),
+	    'id_jurusan' => set_value('id_jurusan'),
+	    'nama_indo' => set_value('nama_indo'),
+	    'nama_inggris' => set_value('nama_inggris'),
+	    'jml_sks' => set_value('jml_sks'),
+	);
+        $this->load->view('mk_kampus_asal/mk_kampus_asal_form', $data);
+    }
+    
+    public function create_action() 
+    {
+        $this->_rules();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->create();
+        } else {
+            $data = array(
+		'id_jurusan' => $this->input->post('id_jurusan',TRUE),
+		'nama_indo' => $this->input->post('nama_indo',TRUE),
+		'nama_inggris' => $this->input->post('nama_inggris',TRUE),
+		'jml_sks' => $this->input->post('jml_sks',TRUE),
+	    );
+
+            $this->Mk_kampus_asal_model->insert($data);
+            $this->session->set_flashdata('message', 'Create Record Success');
+            redirect(site_url('mk_kampus_asal'));
+        }
+    }
+    
+    public function update($id) 
+    {
+        $row = $this->Mk_kampus_asal_model->get_by_id($id);
+
+        if ($row) {
+            $data = array(
+                'button' => 'Update',
+                'action' => site_url('mk_kampus_asal/update_action'),
+		'id_mk_asal' => set_value('id_mk_asal', $row->id_mk_asal),
+		'id_jurusan' => set_value('id_jurusan', $row->id_jurusan),
+		'nama_indo' => set_value('nama_indo', $row->nama_indo),
+		'nama_inggris' => set_value('nama_inggris', $row->nama_inggris),
+		'jml_sks' => set_value('jml_sks', $row->jml_sks),
+	    );
+            $this->load->view('mk_kampus_asal/mk_kampus_asal_form', $data);
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('mk_kampus_asal'));
+        }
+    }
+    
+    public function update_action() 
+    {
+        $this->_rules();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->update($this->input->post('id_mk_asal', TRUE));
+        } else {
+            $data = array(
+		'id_jurusan' => $this->input->post('id_jurusan',TRUE),
+		'nama_indo' => $this->input->post('nama_indo',TRUE),
+		'nama_inggris' => $this->input->post('nama_inggris',TRUE),
+		'jml_sks' => $this->input->post('jml_sks',TRUE),
+	    );
+
+            $this->Mk_kampus_asal_model->update($this->input->post('id_mk_asal', TRUE), $data);
+            $this->session->set_flashdata('message', 'Update Record Success');
+            redirect(site_url('mk_kampus_asal'));
+        }
+    }
+    
+    public function delete($id) 
+    {
+        $row = $this->Mk_kampus_asal_model->get_by_id($id);
+
+        if ($row) {
+            $this->Mk_kampus_asal_model->delete($id);
+            $this->session->set_flashdata('message', 'Delete Record Success');
+            redirect(site_url('mk_kampus_asal'));
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('mk_kampus_asal'));
+        }
+    }
+
+    public function _rules() 
+    {
+	$this->form_validation->set_rules('id_jurusan', 'id jurusan', 'trim|required');
+	$this->form_validation->set_rules('nama_indo', 'nama indo', 'trim|required');
+	$this->form_validation->set_rules('nama_inggris', 'nama inggris', 'trim|required');
+	$this->form_validation->set_rules('jml_sks', 'jml sks', 'trim|required');
+
+	$this->form_validation->set_rules('id_mk_asal', 'id_mk_asal', 'trim');
+	$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+    }
+
+}
+
+/* End of file Mk_kampus_asal.php */
+/* Location: ./application/controllers/Mk_kampus_asal.php */
+/* Please DO NOT modify this information : */
+/* Generated by Harviacode Codeigniter CRUD Generator 2019-01-21 13:34:13 */
+/* http://harviacode.com */
