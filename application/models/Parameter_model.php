@@ -28,6 +28,8 @@ class Parameter_model extends CI_Model
     // get all
     function get_all()
     {
+        $this->db->select('parameter.*,kriteria.nama');
+        $this->db->join('kriteria','kriteria.id_kriteria = parameter.id_kriteria');
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
     }

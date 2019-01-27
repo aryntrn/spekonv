@@ -8,7 +8,7 @@ class Kriteria_model extends CI_Model
 
     public $table = 'kriteria';
     public $id = 'id_kriteria';
-    public $order = 'DESC';
+    public $order = 'ASC';
 
     function __construct()
     {
@@ -28,6 +28,8 @@ class Kriteria_model extends CI_Model
     // get all
     function get_all()
     {
+        $this->db->select('nilai_kriteria.*, kriteria.*');
+        $this->db->join('nilai_kriteria','kriteria.id_kriteria = nilai_kriteria.id_kriteria_asal AND kriteria.id_kriteria = nilai_kriteria.id_kriteria_tujuan');
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
     }

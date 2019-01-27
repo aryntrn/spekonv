@@ -8,7 +8,7 @@ class Mahasiswa_model extends CI_Model
 
     public $table = 'mahasiswa';
     public $id = 'nim';
-    public $order = 'DESC';
+    public $order = 'ASC';
 
     function __construct()
     {
@@ -28,6 +28,8 @@ class Mahasiswa_model extends CI_Model
     // get all
     function get_all()
     {
+        $this->db->select('mahasiswa.*,kampus_asal.nama_univ');
+        $this->db->join('kampus_asal', 'mahasiswa.id_jurusan_d3 = kampus_asal.id_jurusan');
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
     }

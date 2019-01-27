@@ -45,11 +45,11 @@ class Tahun_ajaran extends CI_Controller
         $data = array(
             'button' => 'Create',
             'action' => site_url('tahun_ajaran/create_action'),
-	    'id_ta' => set_value('id_ta'),
-	    'tahun' => set_value('tahun'),
-	    'deskripsi' => set_value('deskripsi'),
-	    'status' => set_value('status'),
-	);
+    	    'id_ta' => set_value('id_ta'),
+    	    'tahun' => set_value('tahun'),
+    	    'deskripsi' => set_value('deskripsi'),
+    	    'status' => set_value('status'),
+	   );
         $this->load->view('tahun_ajaran/tahun_ajaran_form', $data);
     }
     
@@ -61,10 +61,10 @@ class Tahun_ajaran extends CI_Controller
             $this->create();
         } else {
             $data = array(
-		'tahun' => $this->input->post('tahun',TRUE),
-		'deskripsi' => $this->input->post('deskripsi',TRUE),
-		'status' => $this->input->post('status',TRUE),
-	    );
+        		'tahun' => $this->input->post('tahun',TRUE),
+        		'deskripsi' => $this->input->post('deskripsi',TRUE),
+        		'status' => $this->input->post('status',TRUE),
+    	    );
 
             $this->Tahun_ajaran_model->insert($data);
             $this->session->set_flashdata('message', 'Create Record Success');
@@ -80,11 +80,11 @@ class Tahun_ajaran extends CI_Controller
             $data = array(
                 'button' => 'Update',
                 'action' => site_url('tahun_ajaran/update_action'),
-		'id_ta' => set_value('id_ta', $row->id_ta),
-		'tahun' => set_value('tahun', $row->tahun),
-		'deskripsi' => set_value('deskripsi', $row->deskripsi),
-		'status' => set_value('status', $row->status),
-	    );
+        		'id_ta' => set_value('id_ta', $row->id_ta),
+        		'tahun' => set_value('tahun', $row->tahun),
+        		'deskripsi' => set_value('deskripsi', $row->deskripsi),
+        		'status' => set_value('status', $row->status),
+	        );
             $this->load->view('tahun_ajaran/tahun_ajaran_form', $data);
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
@@ -100,11 +100,13 @@ class Tahun_ajaran extends CI_Controller
             $this->update($this->input->post('id_ta', TRUE));
         } else {
             $data = array(
-		'tahun' => $this->input->post('tahun',TRUE),
-		'deskripsi' => $this->input->post('deskripsi',TRUE),
-		'status' => $this->input->post('status',TRUE),
-	    );
-
+        		'tahun' => $this->input->post('tahun',TRUE),
+        		'deskripsi' => $this->input->post('deskripsi',TRUE),
+        		'status' => $this->input->post('status',TRUE),
+    	    );
+            if($this->input->post('status',TRUE) == 'berjalan'){
+                $this->Tahun_ajaran_model->off_another_ta();
+            }
             $this->Tahun_ajaran_model->update($this->input->post('id_ta', TRUE), $data);
             $this->session->set_flashdata('message', 'Update Record Success');
             redirect(site_url('tahun_ajaran'));

@@ -32,6 +32,13 @@ class Nilai_kriteria_model extends CI_Model
         return $this->db->get($this->table)->result();
     }
 
+    //get id from kriteria asal dan kriteria tujuan
+    function get_id($asal,$tujuan){
+        $this->db->where('id_kriteria_asal',$asal);
+        $this->db->where('id_kriteria_tujuan',$tujuan);
+        return $this->db->get($this->table)->row()->id_nilai_kriteria;
+    }
+
     // get data by id
     function get_by_id($id)
     {

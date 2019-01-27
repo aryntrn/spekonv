@@ -10,10 +10,13 @@ class Mhs_c extends DefController
     {
         parent::__construct();
         $this->cekLogin();
+        $this->load->library('form_validation');  
         $this->load->model('Mahasiswa_model');
         $this->load->model('Kampus_asal_model');
         $this->load->model('Transkrip_model');
         $this->load->model('Det_transkrip_model');
+        $this->load->model('Konversi_model');
+        $this->load->model('Det_konversi_model');
         $this->load->model('Mk_kampus_asal_model');
         $this->username=$this->session->userdata('usn');
     }
@@ -44,6 +47,39 @@ class Mhs_c extends DefController
         );
 
         $this->render_page('page_mhs/transkrip',$data);
+    }
+
+    public function update_rps(){
+        $data = array(
+            'rps' => $this->input->post('rps_input',TRUE),
+        );
+
+        $this->Det_transkrip_model->update($this->input->post('id_', TRUE), $data);
+        redirect(site_url('mhs_c/transkrip'));
+    }
+
+    public function konversi(){
+        $id_konv = $this->Konversi_model->get_id($this->username);
+        $acc_mhs = $this->Konversi_model->get_by_id($id_konv);
+        $acc = $acc_mhs->status_acc_mhs;
+        $det_konv = $this->Det_konversi_model->get_hasil_konversi($id_konv);
+        $data = array(
+            'id' => $id_konv,
+            'acc_mhs' => $acc,
+            'konversi' => $det_konv,
+            'pageTitle' => 'Acc Hasil Konversi',
+            'username' => $this->username,
+        );
+
+        $this->render_page('page_mhs/konversi',$data);
+    }
+
+    public function acc_konv(){
+        $data = array(
+            'status_acc_mhs' => 'acc',
+        );
+        $this->Konversi_model->update($this->input->post('id', TRUE), $data);
+        redirect(site_url('mhs_c/konversi'));
     }
 }
 ?>

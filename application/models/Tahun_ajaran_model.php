@@ -8,11 +8,12 @@ class Tahun_ajaran_model extends CI_Model
 
     public $table = 'tahun_ajaran';
     public $id = 'id_ta';
-    public $order = 'DESC';
+    public $order = 'ASC';
 
     function __construct()
     {
         parent::__construct();
+        $this->load->helper('form');    
     }
 
     // datatables
@@ -39,6 +40,20 @@ class Tahun_ajaran_model extends CI_Model
         return $this->db->get($this->table)->row();
     }
     
+    //get tahun ajar berdasar id
+    function get_name_ta($id)
+    {
+        $this->db->where($this->id, $id);
+        return $this->db->get($this->table)->row()->tahun;
+    }
+
+    //get tahun ajar berdasar id
+    function get_ta_aktif()
+    {
+        $this->db->where('status', 'berjalan');
+        return $this->db->get($this->table)->row()->id_ta;
+    }
+
     // get total rows
     function total_rows($q = NULL) {
         $this->db->like('id_ta', $q);
@@ -47,6 +62,14 @@ class Tahun_ajaran_model extends CI_Model
 	$this->db->or_like('status', $q);
 	$this->db->from($this->table);
         return $this->db->count_all_results();
+    }
+
+    // atur semua status jadi tidak aktif saat ada pergantian tahun ajar yang aktif
+    function off_another_ta(){
+        $id = $this->get_ta_aktif();
+        $data = array('status' => 'tdk_aktif');
+        $this->db->where($this->id, $id);
+        $this->db->update($this->table, $data);
     }
 
     // get data with limit and search

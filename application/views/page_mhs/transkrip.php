@@ -20,11 +20,11 @@
                     <tbody>
                         <?php
                             $start = 0;
-                            foreach ($mk as $matkul){
+                            foreach ($mk as $matkul):
                         ?>
                         <tr>
                             <td><?php echo ++$start ?></td>
-                            <td><?php echo $matkul->nama ?></td>
+                            <td><?php echo $matkul->nama?></td>
                             <td><?php echo $matkul->sks ?></td>
                             <td>
                                 <?php 
@@ -32,13 +32,18 @@
                                     else echo $matkul->rps;
                                 ?>
                             </td>
-                            <td width="350px">
-                                <!-- bedain nama button : Isi RPS (ijo) dan Ubah RPS (kuning) -->
-                                <a type="button" class="btn bg-green" data-toggle="modal" data-target="#ubahrps"><i class="fa fa-pencil"></i> Isi RPS</a>
+                            <td>
+                                <a type="button" class="btn bg-green" data-toggle="modal" data-target="#inputRps<?php echo $matkul->iddet?>">
+                                    <i class="fa fa-pencil"></i>
+                                    <?php 
+                                        if($matkul->rps=='') echo "Isi RPS";
+                                        else echo "Ubah RPS"; 
+                                    ?>
+                                </a>
                             </td>
                         </tr>
                         <?php
-                            }
+                            endforeach;
                         ?>
                     </tbody>
                 </table>
@@ -47,7 +52,14 @@
     </div>
 </div>
 
-<div class="modal fade" id="ubahrps">
+<?php
+    foreach($mk as $mkul){
+        $id=$mkul->iddet;
+        $nm=$mkul->nama;
+        $rps=$mkul->rps;
+?>
+
+<div class="modal fade" id="inputRps<?php echo $id?>">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -55,15 +67,18 @@
                 <span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Form Input RPS</h4>
             </div>
-            <div class="modal-body">
-                <p>Mata Kuliah : <?php echo $matkul->nama ; ?></p>
-                <!-- nama matkul blm dinamis. why? -->
-                <textarea class="form-control" rows="3" placeholder="Masukan gambaran materi mata kuliah ini"></textarea>
-            </div>
-            <div class="modal-footer">
-                <a href="<?php echo base_url('Mhs_c/update_rps'); ?>"  type="button" class="btn btn-danger">Simpan</a>
-                <button type="button" class="btn btn btn-default" data-dismiss="modal">Tidak</button>
-            </div>
+            <form action="<?php echo base_url('save_rps')?>" method="post">
+                <div class="modal-body">   
+                    <p>Mata Kuliah : <?php echo $nm ; ?></p>
+                    <textarea name="rps_input" class="form-control" rows="3" placeholder="Masukan gambaran materi mata kuliah ini"><?php echo $rps; ?></textarea>
+                    <input type="hidden" name="id_" value="<?php echo $id?>" /> 
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Simpan</a>
+                    <button type="button" class="btn btn btn-default" data-dismiss="modal">Tidak</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+<?php } ?>

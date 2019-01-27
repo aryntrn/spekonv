@@ -39,16 +39,25 @@ class Mk_amikom_model extends CI_Model
         return $this->db->get($this->table)->row();
     }
     
+    //get mk amikom di ta yang aktif 
+    // $ta_aktif = id tahun ajar yang sedang berjalan
+    function get_list_mk($ta_aktif){
+        $this->db->select('mk_amikom.*');
+        $this->db->join('tahun_ajaran', 'tahun_ajaran.id_ta = mk_amikom.id_ta');
+        $this->db->where('tahun_ajaran.id_ta', $ta_aktif);
+        return $this->db->get($this->table)->result();
+    }
+
     // get total rows
     function total_rows($q = NULL) {
         $this->db->like('id_mk_amikom', $q);
-	$this->db->or_like('id_ta', $q);
-	$this->db->or_like('nama', $q);
-	$this->db->or_like('jml_sks', $q);
-	$this->db->or_like('jenis', $q);
-	$this->db->or_like('rps', $q);
-	$this->db->or_like('prasyarat', $q);
-	$this->db->from($this->table);
+    	$this->db->or_like('id_ta', $q);
+    	$this->db->or_like('nama', $q);
+    	$this->db->or_like('jml_sks', $q);
+    	$this->db->or_like('jenis', $q);
+    	$this->db->or_like('rps', $q);
+    	$this->db->or_like('prasyarat', $q);
+    	$this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
@@ -56,13 +65,13 @@ class Mk_amikom_model extends CI_Model
     function get_limit_data($limit, $start = 0, $q = NULL) {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id_mk_amikom', $q);
-	$this->db->or_like('id_ta', $q);
-	$this->db->or_like('nama', $q);
-	$this->db->or_like('jml_sks', $q);
-	$this->db->or_like('jenis', $q);
-	$this->db->or_like('rps', $q);
-	$this->db->or_like('prasyarat', $q);
-	$this->db->limit($limit, $start);
+    	$this->db->or_like('id_ta', $q);
+    	$this->db->or_like('nama', $q);
+    	$this->db->or_like('jml_sks', $q);
+    	$this->db->or_like('jenis', $q);
+    	$this->db->or_like('rps', $q);
+    	$this->db->or_like('prasyarat', $q);
+    	$this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 

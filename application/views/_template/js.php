@@ -1,9 +1,9 @@
-<script src="<?php echo base_url('assets/adminlte/bower_components/jquery/dist/jquery.min.js') ?>" ></script>
 <!-- Bootstrap 3.3.7 -->
 <script src="<?php echo base_url('assets/adminlte/bower_components/bootstrap/dist/js/bootstrap.min.js') ?>" ></script>
 <!-- FastClick -->
 <script src="<?php echo base_url('assets/adminlte/bower_components/fastclick/lib/fastclick.js') ?>" ></script>
 <!-- AdminLTE App -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="<?php echo base_url('assets/adminlte/dist/js/adminlte.min.js') ?>" ></script>
 <!-- Sparkline -->
 <script src="<?php echo base_url('assets/adminlte/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js') ?>" ></script>

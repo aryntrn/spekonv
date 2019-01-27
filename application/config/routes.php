@@ -50,8 +50,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'auth';
+
+$route['dashboard'] = 'ptgs_c/index';
+
+$route['ta'] = 'ptgs_c/th_ajar';
+$route['modal'] = 'ptgs_c/modal';
+$route['tambah_ta'] = 'ptgs_c/tambah_ta';
+$route['simpan_ta'] = 'ptgs_c/ubah_ta';
+$route['hapus_ta/(:any)'] = 'ptgs_c/hapus_ta/$1';
+
+$route['kurikulum'] = 'ptgs_c/mk_amikom';
+$route['tambah_mk'] = 'ptgs_c/tambah_mk_am';
+$route['ubah_mk'] = 'ptgs_c/ubah_mk_am';
+$route['hapus_mk/(:any)'] = 'ptgs_c/hapus_mk_am/$1';
+
+$route['ahp'] = 'ptgs_c/ahp_list';
+$route['simpan_kriteria'] = 'ptgs_c/simpan_kriteria';
+
+
+$route['rules'] = 'ptgs_c/rules';
+
 $route['mahasiswa'] = 'mhs_c';
-$route['dashboard'] = 'petugas/c_petugas';
-$route['data_mhs'] = 'C_mahasiswa';
+$route['data_mhs'] = 'ptgs_c/mahasiswa';
+$route['hapus_mhs/(:any)'] = 'ptgs_c/hapus_mhs/$1';
+$route['ubah_mhs/(:any)'] = 'ptgs_c/ubah_mhs/$1';
+
+$route['transkrip/(:any)'] = 'ptgs_c/transkrip/$1';
+
+$route['save_rps'] = 'mhs_c/update_rps';
+$route['acc'] = 'mhs_c/acc_konv';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

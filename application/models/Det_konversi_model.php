@@ -38,6 +38,16 @@ class Det_konversi_model extends CI_Model
         $this->db->where($this->id, $id);
         return $this->db->get($this->table)->row();
     }
+
+    // get hasil konversi 
+    function get_hasil_konversi($id)
+    {
+        $this->db->select('mk_kampus_asal.nama_indo as asal, mk_amikom.nama as amikom, det_konversi.status_dipilih');
+        $this->db->join('mk_kampus_asal', 'det_konversi.id_mk_asal = mk_kampus_asal.id_mk_asal');
+        $this->db->join('mk_amikom', 'det_konversi.id_mk_amikom = mk_amikom.id_mk_amikom');
+        $this->db->where('det_konversi.id_konversi', $id);
+        return $this->db->get($this->table)->result();
+    }
     
     // get total rows
     function total_rows($q = NULL) {

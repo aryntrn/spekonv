@@ -35,9 +35,10 @@
         </span>
       </a>
       <ul class="treeview-menu">
-        <li><a href="#"><i class="fa fa-calendar"></i> Tahun Ajar</a></li>
-        <li><a href="#"><i class="fa fa-database"></i> Mata Kuliah Amikom</a></li>
-        <li><a href="#"><i class="fa fa-key"></i> Set up AHP</a></li>
+        <li><a href="<?php echo base_url('ta');?>"><i class="fa fa-calendar"></i> Tahun Ajar</a></li>
+        <li><a href="<?php echo base_url('kurikulum');?>"><i class="fa fa-database"></i> Mata Kuliah Amikom</a></li>
+        <li><a href="<?php echo base_url('ahp');?>"><i class="fa fa-key"></i> Set up AHP</a></li>
+        <li><a href="<?php echo base_url('rules');?>"><i class="fa fa-lock"></i> Set up Aturan Parameter</a></li>
       </ul>
     </li>
     <li class="header">FITUR UTAMA</li>
@@ -68,7 +69,7 @@
         <li class=""><a href="<?php echo base_url('mahasiswa'); ?>"><i class="fa fa-user-o"></i> Data Mahasiswa</a></li>
         <li class=""><a href="<?php echo base_url('mhs_c/transkrip'); ?>"><i class="fa fa-folder"></i> Data Transkrip D3</a></li>
     <li class="header">Hasil Konversi</li>
-      <li class=""><a href=""><i class="fa fa-check"></i> Acc Hasil Konversi</a></li>
+      <li class=""><a href="<?php echo base_url('mhs_c/konversi'); ?>"><i class="fa fa-check"></i> Acc Hasil Konversi</a></li>
       <li class=""><a href=""><i class="fa fa-print"></i> Cetak Hasil Konversi</a></li>
     <?php endif;?>
 </ul>

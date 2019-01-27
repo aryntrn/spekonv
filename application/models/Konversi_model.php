@@ -39,6 +39,14 @@ class Konversi_model extends CI_Model
         return $this->db->get($this->table)->row();
     }
     
+    // get id konversi
+    function get_id($nim)
+    {
+        $this->db->select('id_konversi');
+        $this->db->where('nim', $nim);
+        return $this->db->get($this->table)->row()->id_konversi;
+    }
+
     // get total rows
     function total_rows($q = NULL) {
         $this->db->like('id_konversi', $q);
