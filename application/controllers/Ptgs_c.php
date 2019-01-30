@@ -22,12 +22,14 @@ class Ptgs_c extends DefController
         $this->load->model('Mk_amikom_model');
         $this->load->model('Kriteria_model');
         $this->load->model('Nilai_kriteria_model');
-        $this->load->model('Parameter_model');
+        $this->load->model('Ratings_model');
+        $this->load->model('Nilai_ratings_model');
+        $this->load->model('Sintesis_alternatif_model');
+        $this->load->model('Perhitungan_model');
         $this->username=$this->session->userdata('usn');
     }
 
-    public function index()
-    {
+    public function index(){
         $user = $this->Mahasiswa_model->get_by_id($this->username);
         $data = array(
             'user_data' => $user,
@@ -83,7 +85,6 @@ class Ptgs_c extends DefController
         redirect(site_url('ta'));
     }
 
-
     //list mk amikom
     public function mk_amikom(){
         $id_ta_aktif = $this->Tahun_ajaran_model->get_ta_aktif();
@@ -135,7 +136,6 @@ class Ptgs_c extends DefController
         redirect(site_url('kurikulum'));
     }
 
-
     //list kriteria ahp
     public function ahp_list(){
         $kriteria = $this->Kriteria_model->get_all();
@@ -150,8 +150,7 @@ class Ptgs_c extends DefController
     }
 
     //update kriterie utama
-    public function simpan_kriteria()
-    {
+    public function simpan_kriteria(){
         $jml_kriteria = $this->Kriteria_model->total_rows(NULL); 
         for($a=1;$a<=$jml_kriteria;$a++){
             for($t=1;$t<=$jml_kriteria;$t++){
@@ -162,35 +161,67 @@ class Ptgs_c extends DefController
                         'nilai_prioritas_kriteria' => $this->input->post('input'.$a.$t, TRUE),
                     );    
                     $id_ = $this->Nilai_kriteria_model->get_id($a,$t);
-                    $this->Nilai_kriteria_model->update($id_, $data);
+                    $this->Nilai_kriteria_model->update($id_, $data);   
                 }
             }
+            $data2=array(
+                'priorities_kriteria' => $this->input->post('p-b'.$a,TRUE),
+            );
+            $id_k = $a;
+            $this->Kriteria_model->update($id_k, $data2);
         }
         redirect(site_url('ahp'));
-        
-        /*
-        $data = array(
-            'a' => $jml_kriteria,
-            'pageTitle' => 'Set Up AHP',
-            'username' => $this->username,  
-        );
-        $this->render_page('page_ptgs/dashboard',$data);
-        */
     }
-    //list rules
-    public function rules(){
-        $rules = $this->Parameter_model->get_all();
+
+    //list rating by id_kriteria
+    public function ratings($id_kriteria){
+        $r= $this->Ratings_model->get_ratings_by_kriteria($id_kriteria);
+        $k = $this->Kriteria_model->get_by_id($id_kriteria);
+        $jml_ratings = $this->Ratings_model->total_rows_by_kriteria($id_kriteria); 
         $data = array(
-            'rules'=>$rules,
-            'pageTitle' => 'Aturan Parameter',
+            'idk' => $k->id_kriteria,
+            'nama' => $k->nama,
+            'ratings'=>$r,
+            'jumlah'=>$jml_ratings,
+            'pageTitle' => 'Ratings',
             'username' => $this->username,
         );
-        $this->render_page('page_ptgs/rules',$data);
+        $this->render_page('page_ptgs/ratings',$data);
+    }
+
+    //simpan rating
+    public function simpan_ratings($id_kriteria){
+        $jml_ratings = $this->Ratings_model->total_rows_by_kriteria($id_kriteria); 
+
+        for($a=1;$a<=$jml_ratings;$a++){
+            $d = $this->input->post('dari'.$a, TRUE);
+            for($t=1;$t<=$jml_ratings;$t++){    
+                $k = $this->input->post('ke'.$t, TRUE);
+                if($t>$a){
+                    $data = array(
+                        'id_ratings_asal' => $d,
+                        'id_ratings_tujuan' => $k,   
+                        'kepentingan_ratings' => $this->input->post('input'.$a.$t, TRUE),
+                    );    
+                    $id_ = $this->Nilai_ratings_model->get_id($d,$k);
+                    if(!$id_){
+                         $this->Nilai_ratings_model->insert($data);
+                    }else{
+                        $this->Nilai_ratings_model->update($id_, $data);
+                    }   
+                }
+            }
+            $data2=array(
+                'priorities_ratings' => $this->input->post('p-b'.$a,TRUE),
+            );
+            $id_r = $d;
+            $this->Ratings_model->update($id_r, $data2);
+        }
+        redirect(site_url('ratings/'.$id_kriteria));
     }
 
     //list mahasiswa
-    public function mahasiswa() 
-    {
+    public function mahasiswa(){
         $mahasiswa = $this->Mahasiswa_model->get_all();
         $data = array(
             'mhs_data' => $mahasiswa,
@@ -218,8 +249,7 @@ class Ptgs_c extends DefController
     }
 
     //list transkrip berdasarkan nim
-    public function transkrip($nim) 
-    {
+    public function transkrip($nim){
         $transkrip = $this->Det_transkrip_model->get_transkrip($nim);
         $data = array(
             'transkrip' => $transkrip,
@@ -227,6 +257,73 @@ class Ptgs_c extends DefController
             'username' => $this->session->userdata('usn'),
         );
         $this->render_page('page_ptgs/transkrip',$data);
+    }
+
+    //hitung konv
+        /*
+        get univ data
+        foreach univ{
+            get mk_asal data where p.id_mk_asal and u.id_jurusan same{
+                get data for count : prio kriteria, prio rat, data sintesis (like konv_mk -> $konv)
+                counting....
+                update to db det_konv where id_mk_am & id_mk_asal same -> make function on model 
+            }
+        }
+        */
+        //return $pesan;
+
+    public function hitkonv(){
+        $id_jur = $this->input->post('kampasal', TRUE);
+        $prio = $this->Kriteria_model->get_all();
+        $konv = $this->Sintesis_alternatif_model->get_by_univ($id_jur);
+
+        foreach($konv as $k){
+            $sum=0; $subt=0;
+            foreach($prio as $p){
+                $pk = $p->id_kriteria;
+                $pr = prio_ratings($k->id_mk_amikom,$k->id_mk_asal,$p->id_kriteria);
+                $subt = $pk*$pr;
+                $sum += $subt;
+            }
+            $data=array(
+                'id_mk_amikom'=> $k->id_mk_amikom,
+                'id_mk_asal' => $k->id_mk_asal,
+                'total_hitung_ahp'=>$sum,
+            );
+            $id_=$this->Perhitungan_model->get_id($k->id_mk_amikom,$k->id_mk_asal);
+            if($id_==NULL){
+                $this->Perhitungan_model->insert($data);
+            }else{
+                $this->Perhitungan_model->update($id_, $data);
+            }
+        }
+        redirect('konvmk');
+    }
+
+    //list konv_mk
+    public function konv_mk(){
+        $univ = $this->Kampus_asal_model->get_all();
+        $id_jur = $this->input->post('kampasal', TRUE);
+        $prio = $this->Kriteria_model->get_all();
+        $konv = $this->Sintesis_alternatif_model->get_by_univ(1);
+
+        $data = array(
+            'univ' => $univ,
+            'prio' => $prio,
+            'konv' => $konv,
+            'pageTitle' => 'Pilih Mata Kuliah',
+            'username' => $this->session->userdata('usn'),
+        );
+        $this->render_page('page_ptgs/pilih_mk',$data);
+    }
+
+    //pilih mk
+    function pilih_mk($id){
+        $data=array(
+            'status'=> 'dipilih',
+        );
+        $this->Perhitungan_model->update($id,$data);
+        redirect('konvmk');
     }
 }
 ?>

@@ -13,17 +13,14 @@ class Auth extends CI_Controller {
         $this->load->helper('url');
     }
 	
-	public function index() {
-		//if(isset($_SESSION['username'])){header('location: dashboard');}
-		// else{
-		$this->load->view('index');
-		// }
+	public function index() {	
+	    $this->load->view('index');
 	}
 
 
 	public function cek_login() {
 		$data = array('usn' => $this->input->post('username', TRUE),
-						'paswd' => md5($this->input->post('password', TRUE))
+			'paswd' => md5($this->input->post('password', TRUE))
 			);
 		$this->load->model('model_user'); // load model_user
 		$hasil = $this->model_user->cek_user($data);
@@ -40,7 +37,7 @@ class Auth extends CI_Controller {
 			}
 			elseif ($this->session->userdata('level')=='mhs') {
 				redirect('mahasiswa');
-			}		
+			}	
 		}
 		else {
 			echo "<script>alert('Gagal login: Cek username, password!');history.go(-1);</script>";

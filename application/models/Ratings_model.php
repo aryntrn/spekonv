@@ -3,11 +3,11 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Parameter_model extends CI_Model
+class Ratings_model extends CI_Model
 {
 
-    public $table = 'parameter';
-    public $id = 'id_rules';
+    public $table = 'ratings';
+    public $id = 'id_ratings';
     public $order = 'DESC';
 
     function __construct()
@@ -15,21 +15,9 @@ class Parameter_model extends CI_Model
         parent::__construct();
     }
 
-    // datatables
-    function json() {
-        $this->datatables->select('id_rules,id_kriteria,nama_param,jenis_param,param_angka,batas_min,batas_max,nilai_skala_ahp');
-        $this->datatables->from('parameter');
-        //add this line for join
-        //$this->datatables->join('table2', 'parameter.field = table2.field');
-        $this->datatables->add_column('action', anchor(site_url('parameter/read/$1'),'Read')." | ".anchor(site_url('parameter/update/$1'),'Update')." | ".anchor(site_url('parameter/delete/$1'),'Delete','onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), 'id_rules');
-        return $this->datatables->generate();
-    }
-
     // get all
     function get_all()
     {
-        $this->db->select('parameter.*,kriteria.nama');
-        $this->db->join('kriteria','kriteria.id_kriteria = parameter.id_kriteria');
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
     }
@@ -43,29 +31,46 @@ class Parameter_model extends CI_Model
     
     // get total rows
     function total_rows($q = NULL) {
-        $this->db->like('id_rules', $q);
+        $this->db->like('id_ratings', $q);
 	$this->db->or_like('id_kriteria', $q);
-	$this->db->or_like('nama_param', $q);
+	$this->db->or_like('nama', $q);
 	$this->db->or_like('jenis_param', $q);
 	$this->db->or_like('param_angka', $q);
 	$this->db->or_like('batas_min', $q);
 	$this->db->or_like('batas_max', $q);
-	$this->db->or_like('nilai_skala_ahp', $q);
+	$this->db->or_like('priorities_ratings', $q);
 	$this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
+
+    function get_ratings_by_kriteria($id){
+        $this->db->select('kriteria.*,ratings.*');
+        $this->db->join('kriteria','kriteria.id_kriteria=ratings.id_kriteria');
+        $this->db->where('ratings.id_kriteria',$id);
+        return $this->db->get($this->table)->result();
+    }
+
+    function total_rows_by_kriteria($id_kriteria){
+        $this->db->select('kriteria.*,ratings.*');
+        $this->db->join('kriteria','kriteria.id_kriteria=ratings.id_kriteria');
+        $this->db->where('ratings.id_kriteria',$id_kriteria);
+        $this->db->from($this->table);
+        return $this->db->count_all_results();   
+    }
+    
+
     // get data with limit and search
     function get_limit_data($limit, $start = 0, $q = NULL) {
         $this->db->order_by($this->id, $this->order);
-        $this->db->like('id_rules', $q);
+        $this->db->like('id_ratings', $q);
 	$this->db->or_like('id_kriteria', $q);
-	$this->db->or_like('nama_param', $q);
+	$this->db->or_like('nama', $q);
 	$this->db->or_like('jenis_param', $q);
 	$this->db->or_like('param_angka', $q);
 	$this->db->or_like('batas_min', $q);
 	$this->db->or_like('batas_max', $q);
-	$this->db->or_like('nilai_skala_ahp', $q);
+	$this->db->or_like('priorities_ratings', $q);
 	$this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }

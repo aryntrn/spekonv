@@ -66,9 +66,8 @@ $route['hapus_mk/(:any)'] = 'ptgs_c/hapus_mk_am/$1';
 
 $route['ahp'] = 'ptgs_c/ahp_list';
 $route['simpan_kriteria'] = 'ptgs_c/simpan_kriteria';
-
-
-$route['rules'] = 'ptgs_c/rules';
+$route['ratings/(:any)'] = 'ptgs_c/ratings/$1';
+$route['simpan_ratings/(:any)'] = 'ptgs_c/simpan_ratings/$1';
 
 $route['mahasiswa'] = 'mhs_c';
 $route['data_mhs'] = 'ptgs_c/mahasiswa';
@@ -76,6 +75,12 @@ $route['hapus_mhs/(:any)'] = 'ptgs_c/hapus_mhs/$1';
 $route['ubah_mhs/(:any)'] = 'ptgs_c/ubah_mhs/$1';
 
 $route['transkrip/(:any)'] = 'ptgs_c/transkrip/$1';
+$route['hitkonv'] = 'ptgs_c/hitkonv';
+$route['konvmk'] = 'ptgs_c/konv_mk';
+$route['pmk/(:any)'] = 'ptgs_c/pilih_mk/$1';
+
+$route['cetak'] = 'cetak_c/konv';
+// $route['laporan'] = 'cetak_c/laporan';
 
 $route['save_rps'] = 'mhs_c/update_rps';
 $route['acc'] = 'mhs_c/acc_konv';

@@ -1,3 +1,4 @@
+
 <?php
 
     $irdata=array(
@@ -29,13 +30,19 @@
 ?>
 <script>
     window.addEventListener('DOMContentLoaded', function(){
-        $("#detail_hitung").hide();
-        hitung();
-        $(".inputnumber").each(function(){
-            $(this).change(function(){      
-                hitung();
+        var jml_ratings = parseFloat(<?=$jumlah?>);
+        if(jml_ratings <= 2){
+            $("#konsistensi_ratings").hide();
+            $("#warning").show();
+        }else{
+            $("#detail_hitung").hide();
+            hitung();
+            $(".inputnumber").each(function(){
+                $(this).change(function(){      
+                    hitung();
+                });
             });
-        });
+        }
 
     });
 
@@ -46,18 +53,18 @@
     function hitung()
     {
         $(".inputnumber").each(function(){
-                var dtarget=$(this).attr('data-target');
-                var dkolom=$(this).attr('data-kolom');
-                var jumlah=$(this).val();
-                var rumus=1/parseFloat(jumlah);
-                var fx=rumus;
-                $("#"+dtarget).val(fx);
-                total();            
-                mnk();
-                setma();
-                mhlm();
-                lm();
-                resume();
+            var dtarget=$(this).attr('data-target');
+            var dkolom=$(this).attr('data-kolom');
+            var jumlah=$(this).val();
+            var rumus=1/parseFloat(jumlah);
+            var fx=rumus;
+            $("#"+dtarget).val(fx);
+            total();            
+            mnk();
+            setma();
+            mhlm();
+            lm();
+            resume();
         }); 
     }
 
@@ -107,7 +114,7 @@
             }
         }
     }
-    
+
     function mhlm()
     {   
         for(i=1;i<=<?=$jumlah;?>;i++){
@@ -168,7 +175,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-header">
-                <h3>1. Kriteria Utama</h3>
+                <h2>Ratings (Kriteria <?php echo $nama;?>)</h2>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -176,7 +183,10 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Kriteria</th>
+                            <th>Ketentuan Ratings</th>
+                            <th>Jenis</th>
+                            <th>Aturan</th>
+                            <th>Priorities</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -184,15 +194,25 @@
                     <tbody>
                         <?php
                             $start = 0;
-                            foreach ($kriteria as $k):
+                            foreach ($ratings as $r):
                         ?>
                         <tr>
                             <td><?php echo ++$start ?></td>
-                            <td><?php echo $k->nama ?></td>
+                            <td><?php echo $r->nama_ratings ?></td>
+                            <td><?php echo $r->jenis_param ?></td>
                             <td>
-                                <a type="button" class="btn btn-success" href="<?php echo site_url('ratings/'.$k->id_kriteria) ?>"><i class="fa fa-level-down"></i> Ratings Kriteria</a>
-                                <a type="button" class="btn bg-yellow" data-toggle="modal" data-target="#edit<?php echo $k->id_kriteria?>"><i class="fa fa-pencil"></i> Edit Data</a>
-                                <a type="button" class="btn btn-danger" data-toggle="modal" data-target="#hapus<?php echo $k->id_kriteria?>"><i class="fa fa-trash"></i> Hapus Data</a>
+                                <?php 
+                                    if($r->jenis_param == 'text'){
+                                        echo "kemiripan: ".$r->batas_min."% - ".$r->batas_max."%";
+                                    }else{
+                                        echo $r->param_angka;
+                                    }
+                                ?>
+                            </td>
+                            <td><?php echo $r->priorities_ratings ?></td>
+                            <td>
+                                <a type="button" class="btn bg-yellow" data-toggle="modal" data-target="#edit<?php echo $r->id_ratings?>"><i class="fa fa-pencil"></i> Edit Data</a>
+                                <a type="button" class="btn btn-danger" data-toggle="modal" data-target="#hapus<?php echo $r->id_ratings?>"><i class="fa fa-trash"></i> Hapus Data</a>
                             </td>
                         </tr>
                         <?php
@@ -200,7 +220,6 @@
                         ?>
                     </tbody>
                 </table>
-                
             </div>
         </div>
     </div>
@@ -210,18 +229,22 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-header">
-                <h3>2.Nilai Prioritas Kriteria Utama</h3>
+                <h3>2.Nilai Prioritas Ratings (Kriteria <?php echo $nama;?>)</h3>
             </div>
+
+            <div id="warning" class="box-body" hidden="true"><h4><b><center>Tidak bisa menghitung pairwise comparison karena jumlah data kurang.. pairwise comparison dapat dilakukan jika tersedia minimal 3 data ratings. <br> silakan tambah data ratings !</center></b></h4></div>
+
+            <div id="konsistensi_ratings">
             <!-- matriks inputan kriteria utama -->
             <div class="box-body">
-                <form action="<?php echo base_url('simpan_kriteria')?>" method="post">
+                <form action="<?php echo base_url('simpan_ratings/'.$idk)?>" method="post">
                     <?php $jumlah ; ?>
                     <table class="table table-bordered">
                         <thead>
                             <th>Kriteria</th>
                             <?php
-                                foreach ($kriteria as $k) {
-                                    echo '<th>'.$k->nama.'</th>';
+                                foreach ($ratings as $k) {
+                                    echo '<th>'.$k->nama_ratings.'</th>';
                                 }
                             ?>
                         </thead>
@@ -230,15 +253,18 @@
                             <?php
                                 $baris=0;
 
-                                foreach($kriteria as $k2)
+                                foreach($ratings as $k2)
                                 {
                                     $baris+=1;
                                     echo '<tr>';
-                                    echo '<td>'.$k2->nama.'</td>';
+                                    echo '<td>'.$k2->nama_ratings.'</td>';
+                                    $dari=$k2->id_ratings;
+                                    echo '<input type="hidden" name="dari'.$baris.'" class="form-control" value="'.$dari.'" readonly="true"/>';
                                     $kolom=0;
-                                    for($i=1;$i<=$jumlah;$i++)
-                                    {
+                                    foreach($ratings as $k3){
                                         $kolom+=1;
+                                        $tujuan=$k3->id_ratings;
+                                        echo '<input type="hidden" name="ke'.$kolom.'" class="form-control" value="'.$tujuan.'" readonly="true"/>';
                                         if($baris==$kolom){
                                             echo '<td><input type="number" id="b'.$baris.'k'.$kolom.'" class = "form-control kolom'.$kolom.'" value="1" readonly="true"/></td>';
                                         }else if($baris>$kolom){
@@ -247,7 +273,7 @@
                                             echo '<td><select name="input'.$baris.$kolom.'" id="b'.$baris.'k'.$kolom.'" data-target="b'.$kolom.'k'.$baris.'" data-kolom="'.$kolom.'" class="form-control inputnumber kolom'.$kolom.'">';
 
                                             for($skala=1;$skala<=9;$skala++){
-                                                $nilai=ambil_nilai_kriteria($baris,$kolom);
+                                                $nilai=ambil_nilai_ratings($dari,$tujuan);
                                                 $sl='';
                                                 if($nilai==$skala)
                                                 {
@@ -282,7 +308,7 @@
 
                     <div class="pull-left"><h3 id="p1"/></div>
                     <div class="pull-right">
-                        <button type="submit" class="btn btn-primary">Simpan Kriteria</button>
+                        <button type="submit" class="btn btn-primary">Simpan Ratings</button>
                         <a href="javascript:;" onclick="show()" id="btn_htg" class="btn btn-success">Lihat Perhitungan</a>
                     </div>
                 </form>
@@ -300,8 +326,8 @@
                         <thead>
                             <th>Kriteria</th>
                             <?php
-                                foreach ($kriteria as $k) {
-                                    echo '<th>'.$k->nama.'</th>';
+                                foreach ($ratings as $k) {
+                                    echo '<th>'.$k->nama_ratings.'</th>';
                                 }
                             ?>
                             <th>Jumlah</th>
@@ -310,10 +336,10 @@
                         <tbody>
                             <?php
                                 $baris2=0;
-                                foreach($kriteria as $k2){
+                                foreach($ratings as $k2){
                                     $baris2+=1;
                                     echo '<tr>';
-                                    echo '<td>'.$k2->nama.'</td>';
+                                    echo '<td>'.$k2->nama_ratings.'</td>';
                                     $kolom2=0;
                                     for($i=1;$i<=$jumlah;$i++){
                                         $kolom2+=1;
@@ -345,14 +371,16 @@
                     <tbody>
                         <?php
                             $baris3=0;    
-                            foreach($kriteria as $k3) {
+                            foreach($ratings as $k2) {
                                 $baris3+=1;
+                                $dari=$k2->id_ratings;
                                 echo '<tr>';
                                     $kolom3=0;
-                                    for($i=1;$i<=$jumlah;$i++){
+                                    foreach($ratings as $k3) {
+                                        $tujuan=$k3->id_ratings;
                                         $kolom3+=1;
                                         if($baris3<=$kolom3){
-                                            $nilai=ambil_nilai_kriteria($baris3,$kolom3);
+                                            $nilai=ambil_nilai_ratings($dari,$tujuan);
                                             echo '<td width="175px"><input type="text" id="a-b'.$baris3.'k'.$kolom3.'" data-target="a-b'.$kolom3.'k'.$baris3.'" class="form-control inputnumber a-b'.$baris3.'k'.$kolom3.'" value="'.$nilai.'" readonly=""/></td>';
                                         }else{
                                             echo '<td><input type="number" id="a-b'.$baris3.'k'.$kolom3.'" class="form-control a-b'.$baris3.'k'.$kolom3.'" value="0" readonly=""/></td>';
@@ -432,6 +460,7 @@
 
                     </table>
                 </div>
+            </div>
             </div>
             </div>
         </div>
