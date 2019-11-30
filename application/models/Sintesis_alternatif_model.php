@@ -35,16 +35,13 @@ class Sintesis_alternatif_model extends CI_Model
     //nampilin semua hasil perhitungan ahp berdasar jurusan (univ)
     function get_by_univ($idjurusan){
 
-        $this->db->select('m_am.*,m_d3.*,r.*,s.*,p.*');
+        $this->db->select('m_am.*,m_d3.*,r.*,s.*');
         $this->db->from('sintesis_alternatif as s');
-        $this->db->join('mk_amikom as m_am','m_am.id_mk_amikom = s.id_mk_amikom', 'INNER');
-        $this->db->join('mk_kampus_asal as m_d3', 'm_d3.id_mk_asal = s.id_mk_asal', 'INNER');
-        $this->db->join('ratings as r','r.id_ratings = s.id_ratings', 'INNER');
-        $this->db->join('kampus_asal as k','k.id_jurusan = m_d3.id_jurusan', 'INNER');
-        $this->db->join('perhitungan as p','p.id_mk_asal=s.id_mk_asal AND p.id_mk_amikom=s.id_mk_amikom','INNER');
+        $this->db->join('mk_amikom as m_am','m_am.id_mk_amikom = s.id_mk_amikom', 'inner');
+        $this->db->join('mk_kampus_asal as m_d3', 'm_d3.id_mk_asal = s.id_mk_asal', 'inner');
+        $this->db->join('ratings as r','r.id_ratings = s.id_ratings', 'inner');
+        $this->db->join('kampus_asal as k','k.id_jurusan = m_d3.id_jurusan', 'inner');
         $this->db->where('k.id_jurusan',$idjurusan);
-        $this->db->group_by('s.id_mk_asal');
-        $this->db->order_by('p.total_hitung_ahp',$this->order);
         return $this->db->get($this->table)->result();
     }
 
@@ -58,11 +55,11 @@ class Sintesis_alternatif_model extends CI_Model
     // get total rows
     function total_rows($q = NULL) {
         $this->db->like('id_sintesis', $q);
-	$this->db->or_like('id_mk_amikom', $q);
-	$this->db->or_like('id_mk_asal', $q);
-	$this->db->or_like('nilai_asli', $q);
-	$this->db->or_like('id_rules', $q);
-	$this->db->from($this->table);
+    	$this->db->or_like('id_mk_amikom', $q);
+    	$this->db->or_like('id_mk_asal', $q);
+    	$this->db->or_like('nilai_asli', $q);
+    	$this->db->or_like('id_rules', $q);
+    	$this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
@@ -70,11 +67,11 @@ class Sintesis_alternatif_model extends CI_Model
     function get_limit_data($limit, $start = 0, $q = NULL) {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id_sintesis', $q);
-	$this->db->or_like('id_mk_amikom', $q);
-	$this->db->or_like('id_mk_asal', $q);
-	$this->db->or_like('nilai_asli', $q);
-	$this->db->or_like('id_rules', $q);
-	$this->db->limit($limit, $start);
+    	$this->db->or_like('id_mk_amikom', $q);
+    	$this->db->or_like('id_mk_asal', $q);
+    	$this->db->or_like('nilai_asli', $q);
+    	$this->db->or_like('id_rules', $q);
+    	$this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 

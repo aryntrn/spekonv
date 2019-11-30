@@ -28,10 +28,18 @@ class Mahasiswa_model extends CI_Model
     // get all
     function get_all()
     {
-        $this->db->select('mahasiswa.*,kampus_asal.nama_univ');
+        $this->db->select('mahasiswa.*,kampus_asal.nama_univ,kampus_asal.th_angkatan');
         $this->db->join('kampus_asal', 'mahasiswa.id_jurusan_d3 = kampus_asal.id_jurusan');
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
+    }
+
+    function get_last_nim(){
+        //last nim ++
+        $this->db->select('nim');
+        $this->db->order_by($this->id, 'DESC');
+        $this->db->limit(1);
+        return $this->db->get($this->table)->row();
     }
 
     // get data by id
@@ -81,5 +89,5 @@ class Mahasiswa_model extends CI_Model
         $this->db->where($this->id, $id);
         $this->db->delete($this->table);
     }
-
+ 
 }

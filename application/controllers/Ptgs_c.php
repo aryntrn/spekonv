@@ -1,5 +1,5 @@
 <?php
-    // ini controller untuk mengatur semua fungsi untuk level mahasiswa
+    // ini controller untuk mengatur semua fungsi untuk level ptgs 
     if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
@@ -220,11 +220,25 @@ class Ptgs_c extends DefController
         redirect(site_url('ratings/'.$id_kriteria));
     }
 
+    //make new nim 
+    public function new_nim(){
+        $last_nim=$this->Mahasiswa_model->get_last_nim();
+        $last=explode(".", $last_nim->nim);
+        $new = end($last);
+        $new += 1;
+        $nim = "17.22.".$new;
+        return $nim;
+    }
+
     //list mahasiswa
     public function mahasiswa(){
         $mahasiswa = $this->Mahasiswa_model->get_all();
+        $kampus= $this->Kampus_asal_model->get_all();
+        $nim_ = $this->new_nim();
         $data = array(
             'mhs_data' => $mahasiswa,
+            'kampus' => $kampus,
+            'nim' => $nim_,
             'pageTitle' => 'Data Mahasiswa',
             'username' => $this->session->userdata('usn'),
         );
@@ -235,7 +249,6 @@ class Ptgs_c extends DefController
     public function ubah_mhs($id){
         $data = array(
             'nama' => $this->input->post('nama', TRUE),
-            'id_jurusan_d3' => $this->input->post('d3', TRUE),
             'no_hp' => $this->input->post('hp', TRUE),
         );
         $this->Mahasiswa_model->update($id, $data);
@@ -272,58 +285,40 @@ class Ptgs_c extends DefController
         */
         //return $pesan;
 
-    public function hitkonv(){
-        $id_jur = $this->input->post('kampasal', TRUE);
-        $prio = $this->Kriteria_model->get_all();
-        $konv = $this->Sintesis_alternatif_model->get_by_univ($id_jur);
-
-        foreach($konv as $k){
-            $sum=0; $subt=0;
-            foreach($prio as $p){
-                $pk = $p->id_kriteria;
-                $pr = prio_ratings($k->id_mk_amikom,$k->id_mk_asal,$p->id_kriteria);
-                $subt = $pk*$pr;
-                $sum += $subt;
-            }
-            $data=array(
-                'id_mk_amikom'=> $k->id_mk_amikom,
-                'id_mk_asal' => $k->id_mk_asal,
-                'total_hitung_ahp'=>$sum,
-            );
-            $id_=$this->Perhitungan_model->get_id($k->id_mk_amikom,$k->id_mk_asal);
-            if($id_==NULL){
-                $this->Perhitungan_model->insert($data);
-            }else{
-                $this->Perhitungan_model->update($id_, $data);
-            }
-        }
-        redirect('konvmk');
+        //BELUM BERHASIL
+        
+    public function hitung_konv(){
+       $data = $this->input->post('id');
+       $val = hitkonv($data);
     }
 
     //list konv_mk
     public function konv_mk(){
         $univ = $this->Kampus_asal_model->get_all();
-        $id_jur = $this->input->post('kampasal', TRUE);
-        $prio = $this->Kriteria_model->get_all();
-        $konv = $this->Sintesis_alternatif_model->get_by_univ(1);
-
+       
         $data = array(
             'univ' => $univ,
-            'prio' => $prio,
-            'konv' => $konv,
             'pageTitle' => 'Pilih Mata Kuliah',
             'username' => $this->session->userdata('usn'),
         );
-        $this->render_page('page_ptgs/pilih_mk',$data);
-    }
+        $this->render_page('page_ptgs/konvmk_pg',$data);
+    } 
 
     //pilih mk
     function pilih_mk($id){
+        $univ = $this->Kampus_asal_model->get_by_id($id);
+        $konv = $this->Sintesis_alternatif_model->get_by_univ($id);
+        $prio = $this->Kriteria_model->get_all();
         $data=array(
+            'univ' => $univ,
+            'konv' => $konv,
+            'prio' => $prio,
+            'pageTitle' => 'Konversi Mata Kuliah',
+            'username' => $this->session->userdata('usn'),
             'status'=> 'dipilih',
         );
-        $this->Perhitungan_model->update($id,$data);
-        redirect('konvmk');
+        // $this->Perhitungan_model->update($id,$data);
+        $this->render_page('page_ptgs/pilih_mk',$data);
     }
 }
 ?>

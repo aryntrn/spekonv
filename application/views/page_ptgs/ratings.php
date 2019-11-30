@@ -187,7 +187,7 @@
                             <th>Jenis</th>
                             <th>Aturan</th>
                             <th>Priorities</th>
-                            <th>Aksi</th>
+                            <!-- <th>Aksi</th> -->
                         </tr>
                     </thead>
 
@@ -210,10 +210,10 @@
                                 ?>
                             </td>
                             <td><?php echo $r->priorities_ratings ?></td>
-                            <td>
+                            <!-- <td>
                                 <a type="button" class="btn bg-yellow" data-toggle="modal" data-target="#edit<?php echo $r->id_ratings?>"><i class="fa fa-pencil"></i> Edit Data</a>
                                 <a type="button" class="btn btn-danger" data-toggle="modal" data-target="#hapus<?php echo $r->id_ratings?>"><i class="fa fa-trash"></i> Hapus Data</a>
-                            </td>
+                            </td> -->
                         </tr>
                         <?php
                             endforeach;

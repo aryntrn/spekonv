@@ -106,6 +106,57 @@ if(!function_exists('get_tothit'))
 	}
 }
 
+if(!function_exists('hitkonv'))
+{
+ 	function hitkonv($idjur){
+
+ 		$CI=& get_instance();
+ 		// $CI->load->library('datatables');
+		$CI->load->model('Kriteria_model');
+		$CI->load->model('Sintesis_alternatif_model');
+		$CI->load->model('Perhitungan_model');
+
+        $prio = $CI->Kriteria_model->get_all();
+        $konv = $CI->Sintesis_alternatif_model->get_by_univ($idjur);
+
+        foreach($konv as $k){
+            $sum=0; $subt=0;
+            foreach($prio as $p){
+                $pk = $p->id_kriteria;
+                $pr = prio_ratings($k->id_mk_amikom,$k->id_mk_asal,$p->id_kriteria);
+                $subt = $pk*$pr;
+                $sum += $subt;
+            }
+            $data=array(
+                'id_mk_amikom'=> $k->id_mk_amikom,
+                'id_mk_asal' => $k->id_mk_asal,
+                'total_hitung_ahp'=>$sum,
+            );
+            $id_=$CI->Perhitungan_model->get_id($k->id_mk_amikom,$k->id_mk_asal);
+            if(!$id_){
+                $CI->Perhitungan_model->insert($data);
+            }else{
+                $CI->Perhitungan_model->update($id_, $data);
+            }
+        }
+    }
+}
+
+if(!function_exists('getdetkonv'))
+{
+	function getdetkonv($id){
+        $this->db->select('p.*,m_as.*,m_am.*');
+        $this->db->from('perhitungan as p');
+        $this->db->join('mk_kampus_asal as m_as','p.id_mk_asal=m_as.id_mk_asal');
+        $this->db->join('mk_amikom as m_am','p.id_mk_amikom=m_am.id_mk_amikom');
+        $this->db->join('kampus_asal as k','k.id_jurusan = m_as.id_jurusan');
+        $this->db->where('m_as.id_jurusan',$id);
+        $this->db->order_by('p.total_hitung_ahp', $this->order);
+        $this->db->group_by('p.id_mk_asal');
+        return $this->db->get($this->table)->result();
+    }
+}
+
 if(!function_exists('com_choice'))
 {
 	function com_choice($type,$name,$data,$firstVal,$att=array(),$ciVal=TRUE,$inline=FALSE)

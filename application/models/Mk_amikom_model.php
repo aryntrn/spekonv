@@ -16,6 +16,7 @@ class Mk_amikom_model extends CI_Model
     }
 
     // datatables
+    /*
     function json() {
         $this->datatables->select('id_mk_amikom,id_ta,nama,jml_sks,jenis,rps,prasyarat');
         $this->datatables->from('mk_amikom');
@@ -24,6 +25,7 @@ class Mk_amikom_model extends CI_Model
         $this->datatables->add_column('action', anchor(site_url('mk_amikom/read/$1'),'Read')." | ".anchor(site_url('mk_amikom/update/$1'),'Update')." | ".anchor(site_url('mk_amikom/delete/$1'),'Delete','onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), 'id_mk_amikom');
         return $this->datatables->generate();
     }
+    */
 
     // get all
     function get_all()

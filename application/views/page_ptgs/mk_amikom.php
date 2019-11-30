@@ -4,6 +4,7 @@
             <div class="box-header">
                 <h2>Mata Kuliah TA : <?php echo $ta; ?></h2>
                 <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambahMk"><i class="fa fa-pencil"></i> Tambah Mata Kuliah Amikom</a>
+                <a type="button" class="btn btn-success" data-toggle="modal" data-target="#importMk"><i class="fa fa-upload"></i> Import Mata Kuliah Amikom</a>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -100,6 +101,25 @@
             </form>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="importMk">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Import Mata Kuliah Amikom</h4>
+            </div>
+            <?= form_open_multipart(); ?>
+                <div class="modal-body"> 
+                    <input type="file" name="excel" />
+                    <p class="help">* Gunakan file dengan extensi .xlsx</p>
+                    <button type="submit" name="submit" value="upload">Upload... </button>
+                </div>
+            <?= form_close(); ?>
+        </div>
+    
 </div>
 
 <?php

@@ -57,10 +57,10 @@
           </span>
         </a></li> -->
         <li><a href="<?php echo base_url('konvmk');?>"><i class="fa fa-list-alt"></i> Pilih Mata Kuliah</a></li>
-        <li><a href="<?php echo base_url('cetak');?>"><i class="fa fa-check"></i> Acc Hasil Konversi</a></li>
+        <!-- <li><a href="<?php echo base_url('cetak');?>"><i class="fa fa-check"></i> Acc Hasil Konversi</a></li> -->
       </ul>
     </li>
-    <li><a href=""><i class="fa fa-book"></i> <span>Laporan</span></a></li>
+    <!-- <li><a href=""><i class="fa fa-book"></i> <span>Laporan</span></a></li> -->
     
     <?php elseif($this->session->userdata('level')=='mhs'):?>
     <li class="<?php if($this->uri->segment(1)=="mahasiswa"){echo "active";}?>"><a href="<?php echo base_url('mahasiswa'); ?>"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
@@ -68,7 +68,7 @@
         <li class=""><a href="<?php echo base_url('mahasiswa'); ?>"><i class="fa fa-user-o"></i> Data Mahasiswa</a></li>
         <li class=""><a href="<?php echo base_url('mhs_c/transkrip'); ?>"><i class="fa fa-folder"></i> Data Transkrip D3</a></li>
     <li class="header">Hasil Konversi</li>
-      <li class=""><a href="<?php echo base_url('mhs_c/konversi'); ?>"><i class="fa fa-check"></i> Acc Hasil Konversi</a></li>
-      <li class=""><a href=""><i class="fa fa-print"></i> Cetak Hasil Konversi</a></li>
+      <!-- <li class=""><a href="<?php echo base_url('mhs_c/konversi'); ?>"><i class="fa fa-check"></i> Acc Hasil Konversi</a></li> -->
+      <!-- <li class=""><a href=""><i class="fa fa-print"></i> Cetak Hasil Konversi</a></li> -->
     <?php endif;?>
 </ul>

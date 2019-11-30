@@ -191,8 +191,8 @@
                             <td><?php echo $k->nama ?></td>
                             <td>
                                 <a type="button" class="btn btn-success" href="<?php echo site_url('ratings/'.$k->id_kriteria) ?>"><i class="fa fa-level-down"></i> Ratings Kriteria</a>
-                                <a type="button" class="btn bg-yellow" data-toggle="modal" data-target="#edit<?php echo $k->id_kriteria?>"><i class="fa fa-pencil"></i> Edit Data</a>
-                                <a type="button" class="btn btn-danger" data-toggle="modal" data-target="#hapus<?php echo $k->id_kriteria?>"><i class="fa fa-trash"></i> Hapus Data</a>
+                                <!-- <a type="button" class="btn bg-yellow" data-toggle="modal" data-target="#edit<?php echo $k->id_kriteria?>"><i class="fa fa-pencil"></i> Edit Data</a>
+                                <a type="button" class="btn btn-danger" data-toggle="modal" data-target="#hapus<?php echo $k->id_kriteria?>"><i class="fa fa-trash"></i> Hapus Data</a> -->
                             </td>
                         </tr>
                         <?php

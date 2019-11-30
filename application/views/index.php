@@ -11,6 +11,7 @@
   <!-- plugins:css -->
   <link rel="stylesheet" href="<?php echo base_url('assets/purple/vendors/iconfonts/mdi/css/materialdesignicons.min.css') ?>">
   <link rel="stylesheet" href="<?php echo base_url('assets/purple/vendors/css/vendor.bundle.base.css') ?>">
+
   <!-- endinject -->
   <!-- inject:css -->
   <link rel="stylesheet" href="<?php echo base_url('assets/purple/css/style.css') ?>">

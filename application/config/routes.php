@@ -79,7 +79,7 @@ $route['hitkonv'] = 'ptgs_c/hitkonv';
 $route['konvmk'] = 'ptgs_c/konv_mk';
 $route['pmk/(:any)'] = 'ptgs_c/pilih_mk/$1';
 
-$route['cetak'] = 'cetak_c/konv';
+// $route['cetak'] = 'cetak_c/konv';
 // $route['laporan'] = 'cetak_c/laporan';
 
 $route['save_rps'] = 'mhs_c/update_rps';

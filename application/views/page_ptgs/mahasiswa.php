@@ -3,7 +3,7 @@
         <div class="box">
             <div class="box-header">
                 <h2>Daftar Mahasiswa</h2>
-                <a href="<?php //base_url('c_mahasiswa/create'); ?>"  type="button" class="btn btn-primary">Tambah Data Mahasiswa</a>
+                <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambahMhs"><i class="fa fa-pencil"></i>Tambah Data Mahasiswa</a>
                 <!-- <a href="<?php //echo base_url('c_mahasiswa/excel'); ?>"  type="button" class="btn btn-success">Export Data</a> -->
             </div>
             <!-- /.box-header -->
@@ -49,13 +49,57 @@
     </div>
 </div>
 
+<div class="modal fade" id="tambahMhs">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Form Tambah Mahasiswa</h4>
+            </div>
+            <form action="<?php echo base_url('tambah_mk')?>" method="post">
+                <div class="modal-body"> 
+                    <div class="form-group">
+                        <label for="varchar">NIM : </label>
+                        <input type="text" class="form-control" value="<?php echo $nim; ?>"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="varchar">Nama Mahasiswa : </label>
+                        <input type="text" class="form-control" name="nm_mhs" id="nm_mhs" placeholder="Masukan nama mahasiswa" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Asal D3 <?php echo form_error('id_jurusan_d3') ?></label>
+                        <select class="form-control select2">
+                            <option value="">--Pilih Asal D3--</option>
+                            <?php foreach ($kampus as $k){ ?>
+                            <option><?php echo $k->nama_univ." - ".$k->th_angkatan; ?></option>
+                        <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="varchar">No HP : </label>
+                        <input type="text" name="no_hp" class="form-control" placeholder="Masukan nomor hp mahasiswa"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Simpan</a>
+                    <button type="button" class="btn btn btn-default" data-dismiss="modal">Tidak</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <?php
     $start = 0;
     foreach ($mhs_data as $mhs){
         $no = ++$start;
         $id = $mhs->nim;
         $nm = $mhs->nama;
-        $d3 = $mhs->id_jurusan_d3;
+        $d3 = $mhs->nama_univ." - ".$mhs->th_angkatan;
         $hp = $mhs->no_hp;
 ?>
 
@@ -75,8 +119,10 @@
                         <input type="text" class="form-control" name="nama" id="nama" placeholder="Nama" value="<?php echo $nm; ?>" />
                     </div>
                     <div class="form-group">
-                        <label for="int">Id Jurusan D3 <?php echo form_error('id_jurusan_d3') ?></label>
-                        <input type="text" class="form-control" name="d3" id="d3" placeholder="Id Jurusan D3" value="<?php echo $d3; ?>" />
+                        <label>Asal D3 <?php echo form_error('id_jurusan_d3') ?></label>
+                        <select class="form-control select2" disabled="disabled">
+                            <option><?php echo $d3; ?></option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="varchar">No Hp <?php echo form_error('no_hp') ?></label>
